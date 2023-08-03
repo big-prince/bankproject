@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UTC Bank Dashboard</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <style>
+        /* General styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f1f1;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+header {
+  background-color: #2196f3;
+  color: white;
+  padding: 20px;
+}
+
+.balance {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.transactions {
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.transactions h2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.transactions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.transactions li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.transaction-date {
+  font-size: 14px;
+  color: #666;
+}
+
+.transaction-description {
+  font-size: 16px;
+  color: #333;
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.transaction-amount {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.transaction-amount.debit {
+  color: red;
+}
+
+.transaction-amount.credit {
+  color: green;
+}
+
+.delete-transaction {
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.transfer {
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.transfer h2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.transfer form {
+  display: flex;
+  flex-direction: column;
+}
+
+.transfer label {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.transfer input[type="text"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.button-send, button {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button-send {
+  background-color: #2196f3;
+  margin-right: 10px;
+}
+
+.button-request {
+  background-color: #ff9800;
+}
+
+.alert {
+    display: none; /* Hidden by default */
+    background-color: #f44336; /* Red background color */
+    color: white; /* Text color */
+    padding: 15px; /* Padding around the text */
+    border-radius: 4px; /* Rounded corners */
+    position: fixed; /* Fixed positioning to stay on top */
+    bottom: 20px; /* Distance from the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Move left by 50% of its width to center */
+    z-index: 999; /* High z-index to appear above other elements */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Box shadow for a nice effect */
+    font-family: Arial, sans-serif; /* Font family */
+    font-size: 16px; /* Font size */
+  }
+
+/* Other styles for different sections and elements */
+
+/* Adjust styles as needed for responsiveness and to match your desired design */
+
+    </style>
+  <header>
+    <h1>Welcome, <%= profilename %></h1>
+    <p class="balance">Account Number: <%= accountNumber%></p>
+    <p class="balance">Current Account Balance: &#x20A6;<%= accountBalance%></p>
+  </header>
+
+  <section class="transactions">
+    <h2>Last 10 Transactions</h2>
+    <ul>
+      <li>
+        <span class="transaction-date">2023-07-01</span>
+        <span class="transaction-description">Purchase at XYZ Store</span>
+        <span class="transaction-amount debit">&#x20A6;500</span>
+        <button class="delete-transaction">Delete</button>
+      </li>
+      <!-- Repeat the list items for the remaining transactions -->
+    </ul>
+  </section>
+
+  <section class="transfer">
+    <h2>Transfer Money</h2>
+    <form>
+      <div>
+        <label for="recipient">Recipient:</label>
+        <input type="text" id="recipient" name="recipient" placeholder="Account Number" maxlength="10" minlength=10 required>
+      </div>
+      <div>
+        <label for="amount">Amount:</label>
+        <input type="text" id="amount" name="amount" placeholder="&#x20A6;" min=3 required>
+      </div>
+      <div>
+        <!-- HTML content -->
+      <div class="alert" id="alertMessage">
+        Money sent!
+      </div>
+        <!-- <input type="submit" value="Send Money" class="button send">
+        <input type="submit" value="Request Money" class="button request"> -->
+        <button class="button-send">Send Money</button>
+        <button class="button-request">Request Money</button>
+      </div>
+    </form>
+    <a href="http://localhost:5000/"><button class="button send" style="margin-top: 2rem;background-color: red; align-items: flex-end; text-align: right;">Logout</button> </a>
+  </section>
+
+  <!-- Other sections and content -->
+  <script >
+    const sendButton = document.querySelector('.button-send');
+    const requestButton = document.querySelector('.button-request');
+
+    //send form to backend
+    sendButton.addEventListener('click', async (e)=>{
+      e.preventDefault()
+      //get credentials
+      const recipient = document.getElementById('recipient');
+      const amount = document.getElementById('amount');
+      
+      //send credentials to backend
+      const url = 'http://localhost:5000/home/'
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          recipient: recipient.value,
+          amount: amount.value
+        })
+      })
+      .then((response)=>{
+        if(response.ok){
+          console.log('OK')
+          // JavaScript to show the alert when required
+          const alertMessage = document.getElementById("alertMessage");
+          alertMessage.style.display = "block"; // Show the alert
+
+          setTimeout(function () {
+            alertMessage.style.display = "none"; // Hide the alert after 3 seconds
+          }, 4000); 
+          document.getElementById('recipient').value = ""
+          document.getElementById('amount').value = ""
+        }else{
+          console.log('Money not Sent....')
+        }
+      })
+    })
+    requestButton.addEventListener('click', async (e)=>{
+      e.preventDefault()
+      //get credentials
+      const recipient = document.getElementById('recipient');
+      const amount = document.getElementById('amount');
+      
+      //send credentials to backend
+      const url = 'http://localhost:5000/home/request'
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          recipient: recipient.value,
+          amount: amount.value
+        })
+      })
+      .then((response)=>{
+        if(response.ok){
+          // window.location.reload()
+        }else{
+          console.log('Money not Sent....')
+        }
+      })
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!-- index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login/Signup</title>
+</head>
+<body>
+    <style>
+        /* styles.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-container {
+  display: flex;
+}
+
+.auth-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px;
+  width: 300px;
+}
+
+.auth-card h2 {
+  margin-top: 0;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.auth-card button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-card p {
+  margin-top: 10px;
+}
+
+.auth-card a {
+  color: #007bff;
+}
+
+    </style>
+  <div class="container">
+    <h1>Welcome!</h1>
+    <div class="auth-container">
+      <div class="auth-card">
+        <h2>Login</h2>
+        <form id="login-form">
+          <input type="email" placeholder="Email" id="login-email" required>
+          <input type="password" placeholder="Password" id="login-password" required>
+          <button type="submit" class="login-btn">Login</button>
+        </form>
+        <p>Don't have an account? <a href="#" id="signup-link">Sign Up</a></p>
+      </div>
+      <div class="auth-card">
+        <h2>Sign Up</h2>
+        <form id="signup-form">
+          <input type="text" placeholder="Full Name" id="fullName" required>
+          <input type="email" placeholder="Email" id="email" required>
+          <input type="text" placeholder="New AccountNo." id="account" maxlength="10" minlength="10" required>
+          <input type="password" placeholder="Password" id="password" maxlength="50" minlength="5" required>
+          <button type="submit" class="signup-btn">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="#" id="login-link">Login</a></p>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const signupLink = document.getElementById('signup-link');
+  const loginLink = document.getElementById('login-link');
+  const signupBtn = document.querySelector('.signup-btn')
+  const loginBtn = document.querySelector('.login-btn')
+
+  function showLoginForm() {
+    loginForm.style.display = 'block';
+    signupForm.style.display = 'none';
+  }
+
+  function showSignupForm() {
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'block';
+  }
+
+  function handleLoginFormSubmit(event) {
+    event.preventDefault();
+    const email = loginForm.elements.email.value;
+    const password = loginForm.elements.password.value;
+    // Handle login form submission here
+    console.log('Login form submitted');
+    console.log('Email:', email);
+    console.log('Password:', password);
+
+  }
+
+  async function handleSignupFormSubmit(event) {
+    event.preventDefault();
+    const fullName = signupForm.elements.fullName.value;
+    const email = signupForm.elements.email.value;
+    const password = signupForm.elements.password.value;
+    // Handle signup form submission here
+    console.log('Signup form submitted');
+    console.log('Full Name:', fullName);
+    console.log('Email:', email);
+    console.log('Password:', password);
+
+   
+  }
+
+  // Event listeners
+  signupLink.addEventListener('click', function(event) {
+    event.preventDefault();
+    showSignupForm();
+  });
+
+  loginLink.addEventListener('click', function(event) {
+    event.preventDefault();
+    showLoginForm();
+  });
+
+  signupBtn.addEventListener('click', async (e)=>{
+    e.preventDefault();
+    const name = document.getElementById('fullName')
+    const email = document.getElementById('email')  
+    const password = document.getElementById('password')
+    const account = document.getElementById('account')
+
+
+    const url = 'http://localhost:5000/signup'
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name.value,
+            email: email.value,
+            account: account.value,
+            password: password.value
+        })  
+
+    })
+    .then((response)=>{
+    if(response.ok){
+      return response.json
+    }else{
+      throw new Error('invalid Email or password...')
+    }
+  })
+  .then((data)=>{
+    localStorage.setItem('token', data.token);
+        window.location.href = 'http://localhost:5000/home'
+  })
+  .catch(error=> console.log(error))
+  })
+
+  //login send credentials
+  loginBtn.addEventListener('click',async (e)=>{
+    e.preventDefault()
+    const email = document.getElementById('login-email');
+    const password = document.getElementById('login-password')
+    const url = 'http://localhost:5000/login'
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+            email: email.value,
+            password: password.value 
+    })
+  })
+  .then((response)=>{
+    if(response.ok){
+      return response.json
+    }else{
+      throw new Error('invalid Email or password...')
+    }
+  })
+  .then(data=>{
+    
+   localStorage.setItem('token', data.token);
+    window.location.href = 'http://localhost:5000/home'
+  })
+  .catch(error=> console.log(error))
+})
+  
+  
+
+  loginForm.addEventListener('submit', handleLoginFormSubmit);
+  signupForm.addEventListener('submit', handleSignupFormSubmit);
+
+  // Show the login form by default
+  showLoginForm();
+});
+
+  </script>
+</body>
+</html>
