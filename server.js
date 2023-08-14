@@ -20,7 +20,6 @@ app.use(session({
 //middleware settings
 app.use(express.json())
 dotenv.config({path: 'config.env'})
-app.use(cookieParser())
 
 //using views
 app.set('view engine', 'ejs');
