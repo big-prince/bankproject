@@ -23,7 +23,6 @@ dotenv.config({path: 'config.env'})
 
 //using views
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
 //router
 const userRoute = require('./routes/userRoute')
 app.use('/', userRoute);
