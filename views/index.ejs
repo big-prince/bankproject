@@ -222,23 +222,16 @@ body {
             password: password.value 
     })
   })
-    const data = await response.json()
-
-  .then(async (response)=>{
+  .then((response)=>{
     if(response.ok){
       return response.json
     }else{
       throw new Error('invalid Email or password...')
     }
-    //if response is bad
-    if(!response.ok){
-      console.log(data)
-    }
   })
-  .then(data=>{
-    
-   localStorage.setItem('token', data.token);
-    window.location.href = 'http://localhost:5000/home'
+  .then((data)=>{
+    localStorage.setItem('token', data.token);
+        window.location.href = 'http://localhost:5000/home'
   })
   .catch(error=> console.log(error))
 })
