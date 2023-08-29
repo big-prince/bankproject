@@ -68,6 +68,23 @@ body {
   color: #007bff;
 }
 
+.alert {
+    display: none; /* Hidden by default */
+    background-color: #fa2112; /* Red background color */
+    color: white; /* Text color */
+    padding: 15px; /* Padding around the text */
+    border-radius: 4px; /* Rounded corners */
+    position: fixed; /* Fixed positioning to stay on top */
+    bottom: 20px; /* Distance from the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Move left by 50% of its width to center */
+    z-index: 999; /* High z-index to appear above other elements */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Box shadow for a nice effect */
+    font-family: Arial, sans-serif; /* Font family */
+    font-size: 25px; /* Font size */
+  }
+
+
     </style>
   <div class="container">
     <h1>Welcome To UTC!</h1>
@@ -92,6 +109,9 @@ body {
         </form>
         <p>Already have an account? <a href="#" id="login-link">Login</a></p>
       </div>
+    </div>
+    <div class="alert" id="alertMessage">
+      Incorrect Password
     </div>
   </div>
   
@@ -192,7 +212,7 @@ body {
     const email = document.getElementById('login-email');
     const password = document.getElementById('login-password')
     const url = 'http://localhost:5000/login'
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json"
@@ -202,11 +222,17 @@ body {
             password: password.value 
     })
   })
-  .then((response)=>{
+    const data = await response.json()
+
+  .then(async (response)=>{
     if(response.ok){
       return response.json
     }else{
       throw new Error('invalid Email or password...')
+    }
+    //if response is bad
+    if(!response.ok){
+      console.log(data)
     }
   })
   .then(data=>{

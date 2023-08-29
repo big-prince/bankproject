@@ -65,13 +65,13 @@ exports.signup = async (req, res, next) => {
     const emailExists = await User.findOne({email})
     if(!emailExists){
       console.log('Incorrect email')
-      return res.status(404).send('Incorrect email')
+      return res.status(404).json('Incorrect email')
     }
     //check if password correct
     const passwordExists = await bcrypt.compare(req.body.password, emailExists.password)
     if(!passwordExists){
       console.log('Incorrect password')
-      return res.status(404).send('Incorrect password')
+      return res.status(404).json('Incorrect password')
     }
     //create token 
     const token = await jwt.sign({email}, process.env.TOKEN_SECRET, {expiresIn: process.env.JWT_REFRESH_EXPIRATION});
@@ -81,7 +81,7 @@ exports.signup = async (req, res, next) => {
       account: emailExists.account,
       balance: emailExists.balance
     }
-    res.header('Authorization').send('Login Success')
+    res.header('Authorization').json('Login Success')
   };
 
   exports.dashboard = async (req, res) => {
@@ -129,8 +129,8 @@ exports.signup = async (req, res, next) => {
     //check if recipient exists
       const recipientAccount = await User.findOne({ account: recipient });
       if (!recipientAccount) {
-        console.log('Recipient does not exist...');
-        return res.status(404).send('Recipient does not exist.');
+        console.log('Recipient does not exist');
+        return res.status(404).json({message:'Recipient does not exist' });
       }
     //check if the pin is correct
     const pinExists = await Pins.findOne({user: req.session.user.name})
@@ -139,8 +139,11 @@ exports.signup = async (req, res, next) => {
       const correctPin = await bcrypt.compare(req.body.oldPin, pinExists.pin)
       if(!correctPin){
         console.log('Pin is incorrect')
-        return res.status(404).json({message: 'Password Exists'})
+        return res.status(404).json({message: 'Incorrect pin'})
       }
+    }else{
+      console.log('User does not have a pin')
+      return res.status(404).json({message: 'No pin found'})
     }
 
     //   //change the recipient balance
