@@ -4,13 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Login/Signup</title>
+  <script src="https://kit.fontawesome.com/6dcb090a5e.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <style>
         /* styles.css */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+  background-color:  #052742;
   margin: 0;
   padding: 0;
 }
@@ -35,6 +36,18 @@ body {
   width: 300px;
 }
 
+#login-form :focus {
+  outline:none;
+    border-color:#052742;
+    box-shadow:0 0 3px #052742;
+}
+#signup-form :focus {
+  outline:none;
+    border-color:#052742;
+    box-shadow:0 0 3px #052742;
+}
+
+
 .auth-card h2 {
   margin-top: 0;
 }
@@ -53,7 +66,7 @@ body {
 
 .auth-card button {
   padding: 10px;
-  background-color: #007bff;
+  background-color: #052742;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -65,12 +78,12 @@ body {
 }
 
 .auth-card a {
-  color: #007bff;
+  color:  #052742;
 }
 
 .alert {
     display: none; /* Hidden by default */
-    background-color: #fa2112; /* Red background color */
+    background-color: #ff0000; /* Red background color */
     color: white; /* Text color */
     padding: 15px; /* Padding around the text */
     border-radius: 4px; /* Rounded corners */
@@ -205,19 +218,19 @@ body {
 
     </style>
   <div class="container">
-    <h1>Welcome To UTC!</h1>
+    <h1 style="align-items: center;color:  white;display: flex;font-size: 3rem;padding-right: 5rem;">JUT BANK</h1>
     <div class="auth-container">
-      <div class="auth-card">
-        <h2>Login</h2>
+      <div class="auth-card" id="login-card">
+        <h2>Login <i class="fa-sharp fa-solid fa-arrow-right-to-bracket"></i></h2>
         <form id="login-form">
           <input type="email" placeholder="Email" id="login-email" required>
           <input type="password" placeholder="Password" id="login-password" required>
-          <button type="submit" class="login-btn">Login</button>
+          <button type="submit" class="login-btn" style="color: white">Login</button>
         </form>
         <p>Don't have an account? <a href="#" id="signup-link">Sign Up</a></p>
       </div>
-      <div class="auth-card">
-        <h2>Sign Up</h2>
+      <div class="auth-card" id="signup-card">
+        <h2>Sign Up <i class="fa-solid fa-user-plus"></i></h2>
         <form id="signup-form">
           <input type="text" placeholder="Full Name" id="fullName" required>
           <input type="email" placeholder="Email" id="email" required>
@@ -231,6 +244,9 @@ body {
     <div class="alert" id="alertMessage">
       Incorrect Password
     </div>
+    <div class="alert" id="alertMessage2">
+      User Email not Found
+    </div>
   </div>
   
   <script>
@@ -241,15 +257,17 @@ body {
   const loginLink = document.getElementById('login-link');
   const signupBtn = document.querySelector('.signup-btn');
   const loginBtn = document.querySelector('.login-btn');
+  const loginCard = document.getElementById('login-card')
+  const signupCard = document.getElementById('signup-card')
 
   function showLoginForm() {
-    loginForm.style.display = 'block';
-    signupForm.style.display = 'none';
+    loginCard.style.display = 'block';
+    signupCard.style.display = 'none';
   }
 
   function showSignupForm() {
-    loginForm.style.display = 'none';
-    signupForm.style.display = 'block';
+    loginCard.style.display = 'none';
+    signupCard.style.display = 'block';
   }
 
   function handleLoginFormSubmit(event) {
@@ -302,6 +320,7 @@ body {
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: 'include',
         body: JSON.stringify({
             name: name.value,
             email: email.value,
@@ -333,25 +352,43 @@ body {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        
       },
+      credentials: 'include',
       body: JSON.stringify({
             email: email.value,
             password: password.value 
     })
   })
-  .then((response)=>{
-    if(response.ok){
-      return response.json
-    }else{
-      throw new Error('invalid Email or password...')
-    }
-  })
-  .then((data)=>{
+  const data = await response.json();
+  
+  if(response.ok){
+    console.log(data.message)
     localStorage.setItem('token', data.token);
-        window.location.href = 'http://localhost:5000/home'
-  })
-  .catch(error=> console.log(error))
+    window.location.href = 'http://localhost:5000/home'
+    return response.json
+  }
+  //if response is not ok
+  if(!response.ok){
+    //1. if password is wrong
+    if(data.message == "Incorrect password"){
+      const alertMessage = document.getElementById('alertMessage');
+          alertMessage.style.display = 'block';
+          setTimeout(function () {
+            alertMessage.style.display = 'none';
+          }, 6000);
+    }
+
+    //2. if email does not exists
+    if(data.message == "Incorrect email"){
+      const alertMessage = document.getElementById('alertMessage2');
+          alertMessage.style.display = 'block';
+          setTimeout(function () {
+            alertMessage.style.display = 'none';
+          }, 6000);
+    }
+  }
 })
   
   

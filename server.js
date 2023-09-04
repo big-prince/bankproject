@@ -19,6 +19,7 @@ app.use(session({
 
 //middleware settings
 app.use(express.json())
+app.use(cookieParser())
 dotenv.config({path: 'config.env'})
 
 //using views
@@ -29,9 +30,9 @@ app.use('/', userRoute);
 
 //connect database
 
-    mongoose.connect(process.env.DATABASE)
-    .then(console.log("Database connected..."))
-    .catch(error=> {message: error})
+mongoose.connect(process.env.DATABASE)
+.then(console.log("Database connected..."))
+.catch(error=> {message: error})
 
 
 

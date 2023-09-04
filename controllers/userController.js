@@ -65,13 +65,13 @@ exports.signup = async (req, res, next) => {
     const emailExists = await User.findOne({email})
     if(!emailExists){
       console.log('Incorrect email')
-      return res.status(404).json('Incorrect email')
+      return res.status(404).json({message: 'Incorrect email'})
     }
     //check if password correct
     const passwordExists = await bcrypt.compare(req.body.password, emailExists.password)
     if(!passwordExists){
       console.log('Incorrect password')
-      return res.status(404).json('Incorrect password')
+      return res.status(404).json({message: 'Incorrect password'})
     }
     //create token 
     const token = await jwt.sign({email}, process.env.TOKEN_SECRET, {expiresIn: process.env.JWT_REFRESH_EXPIRATION});
@@ -81,7 +81,7 @@ exports.signup = async (req, res, next) => {
       account: emailExists.account,
       balance: emailExists.balance
     }
-    res.header('Authorization').json('Login Success')
+    res.header('Authorization').json({message: "Login Successful"})
   };
 
   exports.dashboard = async (req, res) => {
@@ -126,12 +126,34 @@ exports.signup = async (req, res, next) => {
     if (!recipient || !amount) {
       return res.status(400).send('Recipient and amount are required fields.');
     }
+
+    //current user
+    const currentUser = await User.findOne({account: req.session.user.account})
+  
     //check if recipient exists
       const recipientAccount = await User.findOne({ account: recipient });
       if (!recipientAccount) {
         console.log('Recipient does not exist');
         return res.status(404).json({message:'Recipient does not exist' });
       }
+
+    //check if user is on debt
+    if(currentUser.balance <= 0){
+      console.log('user on debt')
+      return res.status(400).json({message: 'insufficient funds1'})
+    }
+
+    //check if user wants to send more than they have
+    if(incoming > currentUser.balance){
+      console.log('Insufficient funds')
+      return res.status(400).json({message: "insufficient funds2"})
+    }
+
+    //check if recipient is the user
+    if(recipientAccount.account === req.session.user.account){
+      console.log('Cant send to users account')
+      return res.status(400).json({message: "Cant send to self account"})
+    }
     //check if the pin is correct
     const pinExists = await Pins.findOne({user: req.session.user.name})
     if(pinExists){
@@ -152,6 +174,7 @@ exports.signup = async (req, res, next) => {
       //save new balance to DB
       try {
         await recipientAccount.save()
+      
       } catch (error) {
         console.log('Unable to save balance', error)
       }
@@ -166,6 +189,7 @@ exports.signup = async (req, res, next) => {
       try {
         await accountExists.save()
         console.log('User debited')
+        return res.json({userBalance: accountExists.balance})
       } catch (error) {
         console.log('Unable to debit user', error)
       }

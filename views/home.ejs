@@ -243,7 +243,7 @@ header
     <h1>Welcome, <%= profilename %></h1>
     <p class="balance">Account Number: <%= accountNumber%></p>
     <p class="balance">Current Account Balance: &#x20A6;<%= accountBalance%></p>
-    <a href="http://localhost:5000/"><button class="button send" style="margin-top: 2rem;background-color: red; align-items: flex-end; text-align: right;">Logout</button> </a>
+    <a href="http://localhost:5000/"><button class="button send" style="margin-top: 2rem;background-color: red; align-items: flex-end; text-align: right;">Logout<i class="fa-sharp fa-solid fa-right-from-bracket"></i></button> </a>
 
   </header>
 
@@ -261,11 +261,17 @@ header
       </div>
       <div>
         <!-- HTML content -->
-        <div class="alert" id="alertMessage">
+        <div class="alert" id="alertMessage" style="background-color: rgb(19, 216, 19);color: white;">
           Money sent, Reload!
+        </div>
+        <div class="alert" id="alertMessage8">
+          Insufficient funds
         </div>
         <div class="alert" id="alertMessage2">
           Money Received, Reload!
+        </div>
+        <div class="alert" id="alertMessage7">
+          Cannot Send To Self Account
         </div>
         <!-- <input type="submit" value="Send Money" class="button send">
           <input type="submit" value="Request Money" class="button request"> -->
@@ -360,8 +366,10 @@ header
         const response = await fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${localStorage.getItem('authToken')}`
           },
+          credentials: 'include',
           body: JSON.stringify({
             pin: newPinInput.value,
             password: newPinPassword.value
@@ -406,7 +414,7 @@ header
       document.getElementById('pin-input').value = ""
     });
 
-      //pin submit
+      //pin submit for money transfer
     pinSubmitButton.addEventListener('click',async (e) => {
       e.preventDefault()
       // Handle PIN submission here
@@ -423,8 +431,10 @@ header
         const response = await fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${localStorage.getItem('authToken')}`
           },
+          credentials: 'include',
           body: JSON.stringify({
             recipient: recipient.value,
             amount: amount.value,
@@ -466,6 +476,44 @@ header
             alertMessage.style.display = 'none';
             }, 6000);
           }
+          //recipient trying to send to self
+          if(data.message == "Cant send to self account"){
+            const alertMessage = document.getElementById('alertMessage7');
+            pinPopup.style.display = 'none'
+            backdrop.style.display = "none"
+            alertMessage.style.display = 'block';
+            const pinInput = document.getElementById('pin-input')
+            pinInput.value = ""
+            setTimeout(function () {
+            alertMessage.style.display = 'none';
+            }, 6000);
+          }
+          //insufficient funds
+          if(data.message == "insufficient funds2"){
+            const alertMessage = document.getElementById('alertMessage8');
+            pinPopup.style.display = 'none'
+            alertMessage.style.display = 'block';
+            backdrop.style.display = "none"
+            const pinInput = document.getElementById('pin-input')
+            pinInput.value = ""
+            setTimeout(function () {
+            alertMessage.style.display = 'none';
+            }, 6000);
+          }
+          //if user is on 0 or less
+          if(data.message == "insufficient funds1"){
+            const alertMessage = document.getElementById('alertMessage8');
+            pinPopup.style.display = 'none'
+            backdrop.style.display = "none"
+            alertMessage.style.display = 'block';
+            const pinInput = document.getElementById('pin-input')
+            pinInput.value = ""
+            setTimeout(function () {
+            alertMessage.style.display = 'none';
+            }, 6000);
+          }
+          //change user color to red
+        
         }
       } catch (error) {
         console.error('Error:', error);
@@ -502,8 +550,10 @@ header
       const res = await fetch(url, {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('authToken')}`
         },
+        credentials: 'include',
         body: JSON.stringify({
           recipient: recipient.value,
           amount: amount.value
