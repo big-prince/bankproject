@@ -189,7 +189,6 @@ exports.signup = async (req, res, next) => {
       try {
         await accountExists.save()
         console.log('User debited')
-        return res.json({userBalance: accountExists.balance})
       } catch (error) {
         console.log('Unable to debit user', error)
       }
@@ -220,6 +219,7 @@ exports.signup = async (req, res, next) => {
       }catch(error){
         console.log('Error in saving transaction', error)
       }
+      return res.json({userBalance: accountExists.balance})
     }
 
     //send response back to frontend
