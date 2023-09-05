@@ -3,12 +3,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login/Signup</title>
   <script src="https://kit.fontawesome.com/6dcb090a5e.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <style>
         /* styles.css */
+/* Add this inside your <style> section */
+
+/* General styles */
 body {
   font-family: Arial, sans-serif;
   background-color:  #052742;
@@ -21,10 +25,14 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  flex-direction: column; /* Vertically align content */
+  padding: 20px; /* Add some spacing around the content */
 }
 
 .auth-container {
   display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width for small screens */
 }
 
 .auth-card {
@@ -32,8 +40,46 @@ body {
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin: 10px;
-  width: 300px;
+  margin: 10px 0; /* Add vertical spacing between cards */
+  width: 40%; /* Full width for small screens */
+  height: 80%;
+  align-items: center;
+  justify-content: center;
+  margin-left: 22rem;
+}
+
+.auth-card h2 {
+  margin-top: 0;
+  font-size: 24px; /* Increase font size for headings */
+  text-align: center; /* Center align headings */
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px; /* Increase font size for input fields */
+}
+
+.auth-card button {
+  padding: 10px;
+  background-color: #052742;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px; /* Increase font size for buttons */
+}
+
+.auth-card p {
+  margin-top: 10px;
+  text-align: center; /* Center align text */
 }
 
 #login-form :focus {
@@ -47,178 +93,78 @@ body {
     box-shadow:0 0 3px #052742;
 }
 
-
-.auth-card h2 {
-  margin-top: 0;
-}
-
-.auth-card form {
-  display: flex;
-  flex-direction: column;
-}
-
-.auth-card input {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.auth-card button {
-  padding: 10px;
-  background-color: #052742;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.auth-card p {
-  margin-top: 10px;
-}
-
 .auth-card a {
   color:  #052742;
+  text-align: center; /* Center align text */
 }
 
 .alert {
-    display: none; /* Hidden by default */
-    background-color: #ff0000; /* Red background color */
-    color: white; /* Text color */
-    padding: 15px; /* Padding around the text */
-    border-radius: 4px; /* Rounded corners */
-    position: fixed; /* Fixed positioning to stay on top */
-    bottom: 20px; /* Distance from the bottom */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Move left by 50% of its width to center */
-    z-index: 999; /* High z-index to appear above other elements */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Box shadow for a nice effect */
-    font-family: Arial, sans-serif; /* Font family */
-    font-size: 25px; /* Font size */
-  }
-
-  @media (max-width: 575px) {
-  .container {
-    height: auto;
-  }
-
-  .auth-container {
-    flex-direction: column;
-  }
-
-  .auth-card {
-    width: 100%;
-    margin: 0 auto;
-    padding: 10px 20px;
-  }
-
-  .auth-card h2 {
-    font-size: 18px;
-    line-height: 20px;
-  }
-
-  .auth-card form {
-    max-width: 400px;
-  }
-
-  .auth-card input {
-    margin-bottom: 10px;
-    padding: 5px;
-    width: 100%;
-  }
-
-  .auth-card button {
-    padding: 10px;
-    width: 100%;
-  }
-
-  .auth-card p {
-    margin-top: 10px;
-    font-size: 14px;
-  }
-
-  .auth-card a {
-    font-size: 14px;
-  }
-
-  .alert {
-    width: 100%;
-  }
+  display: none;
+  background-color: #ff0000;
+  color: white;
+  padding: 15px;
+  border-radius: 4px;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  font-family: Arial, sans-serif;
+  font-size: 16px; /* Adjust font size for alerts */
 }
 
-@media (max-width: 375px) {
+/* Media Queries for Responsiveness */
+@media (max-width: 575px) {
+
+  .container h1 {
+    padding-top: 0rem;
+    margin-top: -3rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+  }
+  .auth-container {
+    flex-direction: column;
+    margin-bottom: 15rem;
+  }
+
   .auth-card {
-    padding: 10px 10px;
+    width: 80%;
+    margin-left: -0.5rem;
+  }
+
+  .auth-card form{
+    width:100%;
   }
 
   .auth-card h2 {
-    font-size: 16px;
-    line-height: 20px;
-  }
-
-  .auth-card form {
-    max-width: 280px;
+    font-size: 20px;
   }
 
   .auth-card input {
-    padding: 4px;
-    width: 70%;
+    padding: 8px;
   }
 
   .auth-card button {
     padding: 8px;
-    width: 70%;
   }
 
   .auth-card p {
-    margin-top: 5px;
-    font-size: 12px;
-  }
-
-  .auth-card a {
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 320px) {
-  .auth-card {
-    padding: 10px 5px;
-  }
-
-  .auth-card h2 {
     font-size: 14px;
-    line-height: 20px;
-  }
-
-  .auth-card form {
-    max-width: 220px;
-  }
-
-  .auth-card input {
-    padding: 3px;
-    width: 50%;
-  }
-
-  .auth-card button {
-    padding: 6px;
-    width: 50%;
-  }
-
-  .auth-card p {
-    margin-top: 3px;
-    font-size: 10px;
   }
 
   .auth-card a {
-    font-size: 10px;
+    font-size: 14px;
   }
 }
+
 
 
 
     </style>
   <div class="container">
-    <h1 style="align-items: center;color:  white;display: flex;font-size: 3rem;padding-right: 5rem;">JUT BANK</h1>
+    <h1 style="align-items: center;color:  white;display: flex;font-size: 3rem;padding-right: 5rem;">TRUST BANK</h1>
     <div class="auth-container">
       <div class="auth-card" id="login-card">
         <h2>Login <i class="fa-sharp fa-solid fa-arrow-right-to-bracket"></i></h2>
