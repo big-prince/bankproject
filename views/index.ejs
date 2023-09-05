@@ -314,7 +314,7 @@ body {
     const account = document.getElementById('account')
 
 
-    const url = 'http://localhost:5000/signup'
+    const url = '/signup'
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -338,7 +338,7 @@ body {
   })
   .then((data)=>{
     localStorage.setItem('token', data.token);
-        window.location.href = 'http://localhost:5000/home'
+        window.location.href = '/home'
   })
   .catch(error=> console.log(error))
   })
@@ -348,7 +348,7 @@ body {
     e.preventDefault()
     const email = document.getElementById('login-email');
     const password = document.getElementById('login-password')
-    const url = 'http://localhost:5000/login'
+    const url = '/login'
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -366,7 +366,7 @@ body {
   if(response.ok){
     console.log(data.message)
     localStorage.setItem('token', data.token);
-    window.location.href = 'http://localhost:5000/home'
+    window.location.href = '/home'
     return response.json
   }
   //if response is not ok

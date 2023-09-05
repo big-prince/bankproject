@@ -243,7 +243,7 @@ header
     <h1>Welcome, <%= profilename %></h1>
     <p class="balance">Account Number: <%= accountNumber%></p>
     <p class="balance">Current Account Balance: &#x20A6;<%= accountBalance%></p>
-    <a href="http://localhost:5000/"><button class="button send" style="margin-top: 2rem;background-color: red; align-items: flex-end; text-align: right;">Logout<i class="fa-sharp fa-solid fa-right-from-bracket"></i></button> </a>
+    <a href="/"><button class="button send" style="margin-top: 2rem;background-color: red; align-items: flex-end; text-align: right;">Logout<i class="fa-sharp fa-solid fa-right-from-bracket"></i></button> </a>
 
   </header>
 
@@ -361,7 +361,7 @@ header
         // console.log('Value cannot be empty')
       }
       //send to backend
-      const url = 'http://localhost:5000/home/createPin';
+      const url = '/home/createPin';
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -426,7 +426,7 @@ header
 
 
       // Send credentials to backend
-      const url = 'http://localhost:5000/home/';
+      const url = '/home/';
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -546,7 +546,7 @@ header
       const amount = document.getElementById('amount');
       
       //send credentials to backend
-      const url = 'http://localhost:5000/home/request'
+      const url = '/home/request'
       const res = await fetch(url, {
         method: 'POST',
         headers: {
