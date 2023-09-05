@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const cors = require('cors')
 //session
 // Enable session management
 app.use(session({
@@ -20,6 +21,7 @@ app.use(session({
 //middleware settings
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors());
 dotenv.config({path: 'config.env'})
 
 //using views
