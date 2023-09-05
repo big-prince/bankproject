@@ -30,19 +30,23 @@ app.use('/', userRoute);
 
 //connect database
 
-mongoose.connect(process.env.DATABASE)
-.then(console.log("Database connected..."))
-.catch(error=> {message: error})
-
-
-
-
-
-
-
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.DATABASE);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
 
 
 const PORT = process.env.port || 5000
-app.listen(PORT, ()=>{
-    console.log(`Server is started at ${PORT}`)
+//Connect to the database before listening
+connectDB().then(() => {
+  app.listen(PORT, () => {
+      console.log("listening for requests");
+  })
+}).catch(()=>{
+  console.log('No internet')
 })
