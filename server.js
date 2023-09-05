@@ -5,11 +5,12 @@ const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const cors = require('cors')
+app.use(cors());
 //session
 // Enable session management
 app.use(session({
-    secret: 'secret_key',
-    resave: false,
+  secret: 'secret_key',
+  resave: false,
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
@@ -18,10 +19,9 @@ app.use(session({
     }
   }));
 
-//middleware settings
+  //middleware settings
+ app.use(cookieParser())
 app.use(express.json())
-app.use(cookieParser())
-app.use(cors());
 dotenv.config({path: 'config.env'})
 
 //using views
